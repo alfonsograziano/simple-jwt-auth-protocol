@@ -30,7 +30,7 @@ The main token is usually generated on login. Here you can see an use example:
 	    const user = {} //User info from your DB
 	    const password = "mypassword"
 	    if(req.body.password === password){
-		    const  authToken = generateMainToken(user._id, user.roles, SECRET, {}, user.lastPasswordChange)
+		    const  authToken = generateMainToken(user._id, user.roles, {}, user.lastPasswordChange)
 		    res.json({ authToken })
 	    }
     })
@@ -55,7 +55,7 @@ Here you can see a full working example using express:
    	    if (!user) res.status(404).json("User not found")
 
 	    try {
-	        const result = generateSessionToken(req.token, keys.SECRET, user.lastPasswordChange)
+	        const result = generateSessionToken(req.token, user.lastPasswordChange)
 	        res.json({ authToken: result })
 	    } catch (error) {
 	        res.status(301).json(error.message)

@@ -5,9 +5,12 @@ const {
   tokenTypes
 } = require("./tokenGenerators")
 
-let secret = ""
+let secret = null
 const setSecret = newSecret => secret = newSecret
-const getSecret = () => secret
+const getSecret = () => {
+  if(secret === null) throw new Error("Please set a secret!")
+  return secret
+}
 
 
 const MINUTES = 60
