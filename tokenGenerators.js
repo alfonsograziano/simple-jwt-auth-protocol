@@ -8,7 +8,24 @@ const tokenTypes = {
 let blacklistedTokens = []
 let lastInvalidationDate = null
 
-const generateMainToken = (id, roles, secret, customParams = {}, lastPasswordChange) => {
+const getBlacklistedTokens = () => blacklistedTokens
+const setBlacklistedTokens = tokens => {
+    if (Array.isArray(tokens))
+        blacklistedTokens = tokens
+    else
+        throw new Error("You must provide an array of tokens")
+}
+
+const getLastInvalidationDate = () => lastInvalidationDate
+const setLastInvalidationDate = date => {
+    if (date instanceof Date)
+        lastInvalidationDate = date
+    else
+        throw new Error("You must provide a valid Date object")
+}
+
+const generateMainToken = (id, roles, customParams = {}, lastPasswordChange) => {
+    const { getSecret } = require("./middleware")
 
     return jwt.sign({
         id,
@@ -17,18 +34,19 @@ const generateMainToken = (id, roles, secret, customParams = {}, lastPasswordCha
         tokenType: tokenTypes.MAIN,
         createdAt: new Date(),
         lastPasswordChange
-    }, secret)
+    }, getSecret())
 
 }
 
 
-const generateSessionToken = (mainToken, secret, customParams = {}, lastPasswordChange) => {
+const generateSessionToken = (mainToken, customParams = {}, lastPasswordChange) => {
+    const { getSecret } = require("./middleware")
 
     if (blacklistedTokens.includes(mainToken))
         throw new Error("Cannot use this token to generate session tokens")
 
 
-    const decoded = jwt.verify(mainToken, secret)
+    const decoded = jwt.verify(mainToken, getSecret())
     if (decoded.tokenType !== tokenTypes.MAIN)
         throw new Error("You must provide a main token to generate a session token")
 
@@ -54,25 +72,11 @@ const generateSessionToken = (mainToken, secret, customParams = {}, lastPassword
         ...customParams,
         tokenType: tokenTypes.SESSION,
         createdAt: new Date()
-    }, secret)
+    }, getSecret())
 
 }
 
-const getBlacklistedTokens = () => blacklistedTokens
-const setBlacklistedTokens = tokens => {
-    if (Array.isArray(tokens))
-        blacklistedTokens = tokens
-    else
-        throw new Error("You must provide an array of tokens")
-}
 
-const getLastInvalidationDate = () => lastInvalidationDate
-const setLastInvalidationDate = date => {
-    if (date instanceof Date)
-        lastInvalidationDate = date
-    else
-        throw new Error("You must provide a valid Date object")
-}
 
 
 module.exports = {

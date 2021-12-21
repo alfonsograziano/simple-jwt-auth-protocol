@@ -9,12 +9,13 @@ let secret = ""
 const setSecret = newSecret => secret = newSecret
 const getSecret = () => secret
 
+
 const MINUTES = 60
 const HOURS = 24
 const SECONDS = 60
 const MILLISECONDS = 1000
 
-const checkToken = (tokenType = tokenTypes.SESSION, expirePeriod = MINUTES*HOURS) => {
+const checkToken = (tokenType = tokenTypes.SESSION, expirePeriod = MINUTES * HOURS) => {
   return (req, res, next) => {
     let token = req.headers['authorization']
     if (typeof token === "undefined") return res.status(403).json({ success: false, message: 'Token is not defined' })
@@ -33,13 +34,13 @@ const checkToken = (tokenType = tokenTypes.SESSION, expirePeriod = MINUTES*HOURS
       if (decoded.tokenType !== tokenType)
         return res.status(403).json({ success: false, message: 'Cannot use this token, please generate a valid token before proceed' })
 
-      if(tokenType === tokenTypes.SESSION && expirePeriod){
+      if (tokenType === tokenTypes.SESSION && expirePeriod) {
         //Convert expirePeriod (Hours) in milliseconds
-        const expireMs = expirePeriod*SECONDS*MILLISECONDS
+        const expireMs = expirePeriod * SECONDS * MILLISECONDS
         const expireDate = new Date(new Date(decoded.createdAt).getTime() + expireMs)
         const currentDate = new Date()
 
-        if(currentDate.getTime() >= expireDate.getTime()){
+        if (currentDate.getTime() >= expireDate.getTime()) {
           return res.status(403).json({ success: false, message: 'Token expired, please generate another' })
         }
 

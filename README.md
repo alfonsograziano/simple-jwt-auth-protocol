@@ -1,14 +1,16 @@
 ## HeadingSimple JWT Auth protocol
 
 ### Introduction
-JWT is a powerfool tool but using it without simitations could lead to a security issues.
-For this reason i have implemented a little protol some useful middlewares and function.
+JWT is a powerful tool but using it without limitations could lead to security issues.
+So I have implemented a little protocl with some useful middlewares and utilities.
 
-If I make a login and then someone steal my jwt, he can use my credentials indefinitely. 
+Let's see an use case.
+If I make a login (with username and password) and then someone steal my jwt, he can use my credentials indefinitely. 
 We can solve this issue adding an expire time to the token, right? 
-But in this case i have to make the login every time the old token expires.
+In this case the user has to make the login every time the old token expires.
 
-With my implementation i can generate a main token. The main token is invalidated server side adding it on the blacklist or just changing your password. With the main token, you can generate a session token valid for x minutes (you can set the expiration time directly as middleware parameter).
+With my implementation, I can generate a main token. The main token could be invalidated server side by adding it on the blacklist, or just by changing your password. With the main token, you can generate a session token valid for x minutes (you can set the expiration time directly as middleware parameter). 
+The default validity is 24h.
 
 ### Before to start
 Please before to run some code remember to add a secret to encrypt data :) 
@@ -80,7 +82,7 @@ Here you can see a full working example using express:
 	   	SHOP_MANAGER:  "shop_manager"
         }
         
-    router.post("/update/categories", checkToken(), restrictTo([UserRoles.SHOP_MANAGER]), (req,res)=>{res.json("Ehi! i'm the shop manager ;)")})
+    router.post("/update/categories", checkToken(), restrictTo([UserRoles.SHOP_MANAGER]), (req,res)=>{res.json("Ehi! I'm the shop manager ;)")})
 
 ### How to invalidate a main token? 
 You cannot 'invalidate' a main token but you cannot use a main token directly, right? You can just use it to create a session token but... if you add the main token to the blacklist (using the `setBlacklistedTokens` function) or if you change your password, then you cannot generate a new session token using that token. 
