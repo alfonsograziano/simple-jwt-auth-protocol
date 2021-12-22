@@ -6,6 +6,11 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "homepage": "https://github.com/lokk3d/simple-jwt-auth-protocol",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lokk3d/simple-jwt-auth-protocol.git"
+  },
   "author": "Alfonso Graziano",
   "license": "ISC",
   "dependencies": {
